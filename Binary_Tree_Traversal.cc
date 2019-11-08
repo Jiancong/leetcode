@@ -15,6 +15,11 @@ struct TreeNode {
 
 class Solution {
 public:
+	// 1) make an empty stack, and push the root node
+	// 2) if stack is not empty, pop the node and print it out, 
+	// 3) push the right node of top first
+	// 4) push the left node of top second
+	// NOTE: push the right first as make it pop out stack later than left.
     vector<int> preorderTraversal(TreeNode* root) {
         stack<TreeNode*> mystack;
         vector<int> res;
@@ -88,6 +93,13 @@ public:
         return res;
     }
 
+	// 1. Push the root node to stack
+	// 2. Move the pointer to the leftmost child, and push the node to stack
+	//	  a) if it has the right child, go along with the next right child, and push node to stack
+	//	  b) if it's the leaf node, pop the node and print the value, 
+	//		 b1) leaf node is current node's left child, make right child as current node if existed, else 
+	//			 make left child as NULL and make flag visited preventing re-stack the node.
+	//		 b2) leaf node is current node's right child, just mark it as visited and null the right child.
     vector<int> postorderTraversal(TreeNode* root) {
         stack<TreeNode*> mystack;
         vector<int> res;
