@@ -8,7 +8,6 @@ endif
 CXX = g++
 TOPDIR= $(BUILDDIR_ABSOLUTE)/../
 
-CPPFLAGS += `pkg-config --cflags protobuf grpc`
 CPPFLAGS += -std=c++11
 
 INCLUDEDIRS += -I$(TOPDIR) 
@@ -16,7 +15,7 @@ INCLUDEDIRS += -I$(TOPDIR)
 LDFLAGS += -L/usr/local/lib \
 		  -Wl,--no-as-needed -Wl,--as-needed\
 
-BUILD?=release
+BUILD?=DEBUG
 
 ifeq ($(BUILD), release)
 	CPPFLAGS += -s -O3 
@@ -31,14 +30,28 @@ all: Binary_Tree_Traversal
 	$(info "Building [$(BUILD)] version.")                                                                                  
 	$(info "*********************************")    
 
-SRC := $(shell find $(SRCDIR) -name "*.cc")
-OBJ := $(SRC:%.cpp=%.o)
+SRC := $(BUILDDIR_ABSOLUTE)/
 
-Binary_Tree_Traversal.o: Binary_Tree_Traversal.cc
+SOURCES := $(wildcard $(SRC)/*.cc)
+OBJECTS := $(patsubst $(SRC)/%.cc, $(OBJ)/%.o, $(SOURCES))
+
+$(SRC)/$(OBJECTS): $(SOURCES)
 	$(info "[Compile] Generate objects.")                                                                                   
 	$(CXX) $(CPPFLAGS) -c $< 
 
 Binary_Tree_Traversal: Binary_Tree_Traversal.o
 	$(info "[CXX] Make CPP files.")
 	$(CXX) $(CPPFLAGS) $(INCLUDEDIRS) -o $@ $^ $(LDFLAGS)
+
+
+#all: $(OBJECTS)
+#	$(CXX) $^ -o $@
+
+#$(SRC)/%: $(SRC)/%.o
+#	$(info "[CXX] Make object files.")
+#	$(CXX) $(CPPFLAGS) $(INCLUDEDIRS) -o $@ $^ $(LDFLAGS)
+#
+#$(SRC)/%.o: $(SRC)/%.cc
+#	$(info "[CXX] Make CPP files.")
+#	$(CXX) -I$(SRC) $(CPPFLAGS) -c $< -o $@
 

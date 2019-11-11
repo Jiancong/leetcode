@@ -1,6 +1,8 @@
 #include <stack>
 #include <vector>
 #include <iostream>
+#include <queue>
+#include <map>
 using namespace std;
 
 /**
@@ -156,13 +158,126 @@ public:
                 }
             }
         }
-        return res;
     }
+
+	vector<vector<int> > levelOrder(TreeNode* root) {
+		vector<vector<int> > result;	// returned data
+        queue<TreeNode*> myqueue;		// BFS used queue 
+		map<TreeNode*, int> mymap;		// TreeNode to its level depth
+		map<int, vector<int> > mymap2;	// record the depth level and node list
+
+		int maxDepth = 0;				// record how deep our tree is
+
+		TreeNode* currentNode = root;
+
+		if (currentNode != NULL ) {
+			myqueue.push(currentNode);
+
+			vector<int> res;
+			res.push_back(currentNode->val);
+
+			mymap.emplace(make_pair(currentNode, 0));
+			mymap2.emplace(make_pair(0, res));
+		} else return result;
+
+		while(myqueue.empty() == false)
+		{
+			currentNode = myqueue.front();
+			myqueue.pop();
+
+			int parent_level = 0;
+			map<TreeNode*, int>::iterator it = mymap.find(currentNode);
+			if (it != mymap.end())
+				parent_level = it->second;
+
+			if (currentNode->left != NULL)
+			{
+				map<TreeNode*, int>::iterator it = mymap.find(currentNode->left);
+				if (it == mymap.end())
+				{
+					vector<int> res;
+					myqueue.push(currentNode->left);
+
+					mymap.emplace(make_pair(currentNode->left, parent_level+1));
+					
+					map<int, vector<int> >::iterator it2 = mymap2.find(parent_level + 1);
+					if (it2 == mymap2.end())
+					{
+						res.push_back(currentNode->left->val);
+						mymap2.emplace(make_pair(parent_level + 1, res));
+					} else {
+						it2->second.push_back(currentNode->left->val);
+					}
+
+					if (parent_level+1 > maxDepth) maxDepth = parent_level+1;
+				}
+
+			}
+
+			if (currentNode->right != NULL) {
+				map<TreeNode*, int>::iterator it = mymap.find(currentNode->right);
+				if (it == mymap.end())
+				{
+					vector<int> res;
+					myqueue.push(currentNode->right);
+
+					mymap.emplace(make_pair(currentNode->right, parent_level+1));
+
+					map<int, vector<int> >::iterator it2 = mymap2.find(parent_level + 1);
+					if (it2 == mymap2.end())
+					{
+						res.push_back(currentNode->right->val);
+						mymap2.emplace(make_pair(parent_level + 1, res));
+					} else {
+						it2->second.push_back(currentNode->right->val);
+					}
+
+					if (parent_level+1 > maxDepth) maxDepth = parent_level+1;
+				}
+			}
+		}
+
+		for (int i = 0; i <= maxDepth; i++)
+		{
+			map<int, vector<int> >::iterator it = mymap2.find(i);
+			result.push_back(it->second);
+		}
+
+		return result;
+	}
 };
 
-int main(){
+void TestCase_BFS(){
+	TreeNode root(3);
+	TreeNode N1(9);
+	TreeNode N2(20);
+	TreeNode N3(15);
+	TreeNode N4(7);
+	root.left = &N1;
+	root.right = &N2;
+	N2.left = &N3;
+	N2.right = &N4;
+	Solution sol;
+
+	vector<vector<int> > result;
+
+	result = sol.levelOrder(&root) ;
+
+	cout << "result size:" << result.size() << endl;
+	for (int i = 0; i < result.size(); i++)
+	{
+		cout << "[ "  ;
+		vector<int> inner = result[i];
+		for (int j = 0; j < inner.size(); j++)
+			cout << inner[j] << ",";
+		cout << "] " ;
+		cout << endl;
+	}
+
+}
+
+void TestCase_PreoderTraversal(){
     vector<int> res;
-    vector<int> res1;
     Solution sol;
     TreeNode Node1(2);
     TreeNode Node2(3);
@@ -172,20 +287,20 @@ int main(){
     rootNode.right = &Node1;
     Node1.left = &Node2;
     Node1.right = NULL;
-
-//  res = sol.preorderTraversal(&rootNode);
-//
-//  for (auto const& val: res)
-//      cout << val << " ";
-//
-//  cout << endl;
-
-    res1 = sol.postorderTraversal(&rootNode);
-    for (auto const& val: res1)
+  
+    res = sol.preorderTraversal(&rootNode);
+  
+    for (auto const& val: res)
         cout << val << " ";
+  
+    cout << endl;
 
-	cout << endl;
+}
 
+void TestCase_post()
+{
+    vector<int> res1;
+    Solution sol;
     TreeNode Node11(1);
     TreeNode Node22(2);
     TreeNode rootNode1(3);
@@ -195,6 +310,7 @@ int main(){
     Node11.left = NULL;
     Node11.right = NULL;
     Node22.left = NULL;
+
     Node22.right = NULL;
 
     res1 = sol.postorderTraversal(&rootNode1);
@@ -202,6 +318,10 @@ int main(){
         cout << val << " ";
 
     cout << endl;
+}
+
+int main(){
+	TestCase_BFS();
 
     return 0;
 }
