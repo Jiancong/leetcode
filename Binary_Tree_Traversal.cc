@@ -3,6 +3,7 @@
 #include <iostream>
 #include <queue>
 #include <map>
+#include <algorithm>
 using namespace std;
 
 /**
@@ -163,7 +164,7 @@ public:
 	vector<vector<int> > levelOrder(TreeNode* root) {
 		vector<vector<int> > result;	// returned data
         queue<TreeNode*> myqueue;		// BFS used queue 
-		map<TreeNode*, int> mymap;		// TreeNode to its level depth
+		map<TreeNode*, int> mymap;		// TreeNode to its level depth, 
 		map<int, vector<int> > mymap2;	// record the depth level and node list
 
 		int maxDepth = 0;				// record how deep our tree is
@@ -245,7 +246,156 @@ public:
 
 		return result;
 	}
+
+	// used the post-order traversal to get answer
+	// bottom-up solution
+	int maxDepth(TreeNode* root) {
+		if (!root) {
+			return 0;                                 // return 0 for null node
+		}
+		int left_depth = maxDepth(root->left);
+		int right_depth = maxDepth(root->right);
+		return max(left_depth, right_depth) + 1;	  // return depth of the subtree rooted at root
+    }
+
+	vector<vector<int>> zigzagLevelOrder(TreeNode* root) {
+		vector<vector<int> > result;	// returned data
+        queue<TreeNode*> myqueue;		// BFS used queue 
+		map<TreeNode*, int> mymap;		// TreeNode to its level depth, 
+		map<int, vector<int> > mymap2;	// record the depth level and node list
+
+		int maxDepth = 0;				// record how deep our tree is
+
+		TreeNode* currentNode = root;
+
+		if (currentNode != NULL ) {
+			myqueue.push(currentNode);
+
+			vector<int> res;
+			res.push_back(currentNode->val);
+
+			mymap.emplace(make_pair(currentNode, 0));
+			mymap2.emplace(make_pair(0, res));
+		} else return result;
+
+		while(myqueue.empty() == false)
+		{
+			currentNode = myqueue.front();
+			myqueue.pop();
+
+			int parent_level = 0;
+			map<TreeNode*, int>::iterator it = mymap.find(currentNode);
+			if (it != mymap.end())
+				parent_level = it->second;
+
+			if (currentNode->left != NULL)
+			{
+				map<TreeNode*, int>::iterator it = mymap.find(currentNode->left);
+				if (it == mymap.end())
+				{
+					vector<int> res;
+					myqueue.push(currentNode->left);
+
+					mymap.emplace(make_pair(currentNode->left, parent_level+1));
+					
+					map<int, vector<int> >::iterator it2 = mymap2.find(parent_level + 1);
+					if (it2 == mymap2.end())
+					{
+						res.push_back(currentNode->left->val);
+						mymap2.emplace(make_pair(parent_level + 1, res));
+					} else {
+						it2->second.push_back(currentNode->left->val);
+					}
+					if (parent_level+1 > maxDepth) maxDepth = parent_level+1;
+				}
+			}
+
+			if (currentNode->right != NULL) {
+				map<TreeNode*, int>::iterator it = mymap.find(currentNode->right);
+				if (it == mymap.end())
+				{
+					vector<int> res;
+					myqueue.push(currentNode->right);
+
+					mymap.emplace(make_pair(currentNode->right, parent_level+1));
+
+					map<int, vector<int> >::iterator it2 = mymap2.find(parent_level + 1);
+					if (it2 == mymap2.end())
+					{
+						res.push_back(currentNode->right->val);
+						mymap2.emplace(make_pair(parent_level + 1, res));
+					} else {
+						it2->second.push_back(currentNode->right->val);
+					}
+
+					if (parent_level+1 > maxDepth) maxDepth = parent_level+1;
+				}
+			}
+		}
+
+		for (int i = 0; i <= maxDepth; i++)
+		{
+			map<int, vector<int> >::iterator it = mymap2.find(i);
+			if (i % 2 == 1)
+			{
+				vector<int> vec = it->second;
+				std::reverse(vec.begin(), vec.end());
+				result.push_back(vec);
+			} else {
+				result.push_back(it->second);
+			}	
+		}
+
+		return result;
+		        
+	}
+
+private:
+	int answer_;
+	int depth_;
 };
+
+void TestCase_BFS_Zigzag() {
+	/*
+	TreeNode root(3);
+	TreeNode N1(9);
+	TreeNode N2(20);
+	TreeNode N3(15);
+	TreeNode N4(7);
+	root.left = &N1;
+	root.right = &N2;
+	N2.left = &N3;
+	N2.right = &N4;
+	*/
+	TreeNode root(1);
+	TreeNode N1(2);
+	TreeNode N2(3);
+	TreeNode N3(4);
+	TreeNode N4(5);
+	root.left = &N1;
+	root.right = &N2;
+	N1.left = &N3;
+	N2.right = &N4;	
+
+	Solution sol;
+
+	vector<vector<int> > result;
+
+	result = sol.zigzagLevelOrder(&root) ;
+
+	cout << "result size:" << result.size() << endl;
+
+	for (int i = 0; i < result.size(); i++)
+	{
+		cout << "[ "  ;
+		vector<int> inner = result[i];
+		for (int j = 0; j < inner.size(); j++)
+			cout << inner[j] << ",";
+		cout << "] " ;
+		cout << endl;
+	}
+
+}
 
 void TestCase_BFS(){
 	TreeNode root(3);
@@ -321,7 +471,8 @@ void TestCase_post()
 }
 
 int main(){
-	TestCase_BFS();
+	//TestCase_BFS();
+	TestCase_BFS_Zigzag();
 
     return 0;
 }

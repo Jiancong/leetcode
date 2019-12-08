@@ -43,6 +43,10 @@ Binary_Tree_Traversal: Binary_Tree_Traversal.o
 	$(info "[CXX] Make CPP files.")
 	$(CXX) $(CPPFLAGS) $(INCLUDEDIRS) -o $@ $^ $(LDFLAGS)
 
+Recursive: Recursive.o
+	$(info "[CXX] Make CPP files.")
+	$(CXX) $(CPPFLAGS) $(INCLUDEDIRS) -o $@ $^ $(LDFLAGS)
+
 
 #all: $(OBJECTS)
 #	$(CXX) $^ -o $@
