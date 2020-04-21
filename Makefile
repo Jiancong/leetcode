@@ -47,7 +47,9 @@ Recursive: Recursive.o
 	$(info "[CXX] Make CPP files.")
 	$(CXX) $(CPPFLAGS) $(INCLUDEDIRS) -o $@ $^ $(LDFLAGS)
 
-
+MaxConsecutiveOnes: MaxConsecutiveOnes.o
+	$(info "[CXX] Make CPP files.")
+	$(CXX) $(CPPFLAGS) $(INCLUDEDIRS) -o $@ $^ $(LDFLAGS)
 #all: $(OBJECTS)
 #	$(CXX) $^ -o $@
 
