@@ -25,15 +25,16 @@ else
 	CFLAG += -g -pg -Wall -Wno-deprecated 
 endif
 
-all: Binary_Tree_Traversal
+all: Binary_Tree_Traversal Recursive MaxConsecutiveOnes
 	$(info "*********************************")                                                                             
 	$(info "Building [$(BUILD)] version.")                                                                                  
 	$(info "*********************************")    
 
 SRC := $(BUILDDIR_ABSOLUTE)/
+OBJ := $(BUILDDIR_ABSOLUTE)/Bins/
 
 SOURCES := $(wildcard $(SRC)/*.cc)
-OBJECTS := $(patsubst $(SRC)/%.cc, $(OBJ)/%.o, $(SOURCES))
+OBJECTS := $(patsubst $(SRC)/%.cc, $(SRC)/%.o, $(SOURCES))
 
 $(SRC)/$(OBJECTS): $(SOURCES)
 	$(info "[Compile] Generate objects.")                                                                                   
@@ -41,23 +42,20 @@ $(SRC)/$(OBJECTS): $(SOURCES)
 
 Binary_Tree_Traversal: Binary_Tree_Traversal.o
 	$(info "[CXX] Make CPP files.")
-	$(CXX) $(CPPFLAGS) $(INCLUDEDIRS) -o $@ $^ $(LDFLAGS)
+	$(CXX) $(CPPFLAGS) $(INCLUDEDIRS) -o $(OBJ)/$@ $^ $(LDFLAGS)
 
 Recursive: Recursive.o
 	$(info "[CXX] Make CPP files.")
-	$(CXX) $(CPPFLAGS) $(INCLUDEDIRS) -o $@ $^ $(LDFLAGS)
+	$(CXX) $(CPPFLAGS) $(INCLUDEDIRS) -o $(OBJ)/$@ $^ $(LDFLAGS)
 
 MaxConsecutiveOnes: MaxConsecutiveOnes.o
 	$(info "[CXX] Make CPP files.")
-	$(CXX) $(CPPFLAGS) $(INCLUDEDIRS) -o $@ $^ $(LDFLAGS)
-#all: $(OBJECTS)
-#	$(CXX) $^ -o $@
+	$(CXX) $(CPPFLAGS) $(INCLUDEDIRS) -o $(OBJ)/$@ $^ $(LDFLAGS)
 
-#$(SRC)/%: $(SRC)/%.o
-#	$(info "[CXX] Make object files.")
-#	$(CXX) $(CPPFLAGS) $(INCLUDEDIRS) -o $@ $^ $(LDFLAGS)
-#
-#$(SRC)/%.o: $(SRC)/%.cc
-#	$(info "[CXX] Make CPP files.")
-#	$(CXX) -I$(SRC) $(CPPFLAGS) -c $< -o $@
+.PHONE : clean
+clean:
+	$(info "BUILDDIR_ABSOLUTE: $(BUILDDIR_ABSOLUTE)")
+	$(info "SOURCES: $(SOURCES)")
+	$(info "OBJECTS: $(OBJECTS)")
+	-rm $(OBJECTS)
 
