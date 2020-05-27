@@ -8,6 +8,8 @@ public:
     vector<int> intersection(vector<int>& nums1, vector<int>& nums2) {
 		set<int> intersectionSet;
 		set<int>::iterator it ;
+		set<int>::iterator it2;
+		set<int> resultSet;
 		vector<int> intersectVector;
 
 		if (nums1.size() > nums2.size()) 
@@ -17,16 +19,13 @@ public:
 				if (it == intersectionSet.end())
 					intersectionSet.insert(nums2[i]);
 			}
-
-			cout << "intersectSet size:" << intersectionSet.size() << endl;
-
 			for (int i = 0; i < nums1.size(); i++) {
-				it  = intersectionSet.find(nums1[i]);
-				if (it != intersectionSet.end())
-					intersectVector.push_back(*it);
-			}
+				it = intersectionSet.find(nums1[i]);
+				it2 = resultSet.find(nums1[i]);
 
-			cout << "intersectVector size:" << intersectVector.size() << endl;
+				if (it != intersectionSet.end() && it2 == resultSet.end())
+					resultSet.insert(*it);
+			}
 
 		} else {
 			for (int i = 0; i < nums1.size(); i++) {
@@ -34,16 +33,19 @@ public:
 				if (it == intersectionSet.end())
 					intersectionSet.insert(nums1[i]);
 			}
-
-			cout << "intersectSet size:" << intersectionSet.size() << endl;
-
 			for (int i = 0; i < nums2.size(); i++) {
-				it  = intersectionSet.find(nums2[i]);
-				if (it != intersectionSet.end())
-					intersectVector.push_back(*it);
-			}
-			cout << "intersectVector size:" << intersectVector.size() << endl;
+				it = intersectionSet.find(nums2[i]);
+				it2 = resultSet.find(nums2[i]);
 
+				if (it != intersectionSet.end() && it2 == resultSet.end())
+					resultSet.insert(*it);
+			}
+		}
+
+		it = resultSet.begin();
+		while(it != resultSet.end()) {
+			intersectVector.push_back(*it);
+			it++;
 		}
 
 		return intersectVector;
@@ -56,13 +58,13 @@ int main(){
 	vector<int> nums2{2, 2};
 	vector<int> result;
 
-	for (int i = 0; i < nums1.size(); i++)
-		cout << nums1[i] << endl;
 	result = sol.intersection(nums1, nums2);
 	for (int i = 0; i < result.size(); i++) {
 		cout << result[i]<< ",";
 	}
 
 	cout << endl;
+
+	return 0;
 
 }
