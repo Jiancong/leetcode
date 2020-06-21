@@ -8,7 +8,6 @@ using namespace std;
 struct TrieNode
 {
      struct TrieNode *children[ALPHABET_SIZE];
-
      // isEndOfWord is true if the node
      // represents end of a word
      bool isEndOfWord;
@@ -18,12 +17,9 @@ struct TrieNode
 struct TrieNode *getNode(void) 
 { 
     struct TrieNode *pNode =  new TrieNode; 
-      
 	pNode->isEndOfWord = false; 
-            
 	for (int i = 0; i < ALPHABET_SIZE; i++) 
 		pNode->children[i] = NULL; 
-                          
 	return pNode; 
 } 
 
@@ -51,7 +47,6 @@ public:
 				
 			node = node->children[index];
 		}
-
 		node->isEndOfWord = true;
     }
     
