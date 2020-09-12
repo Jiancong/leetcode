@@ -163,9 +163,9 @@ public:
 
 	vector<vector<int> > levelOrder(TreeNode* root) {
 		vector<vector<int> > result;	// returned data
-        queue<TreeNode*> myqueue;		// BFS used queue 
-		map<TreeNode*, int> mymap;		// TreeNode to its level depth, 
-		map<int, vector<int> > mymap2;	// record the depth level and node list
+        queue<TreeNode*> myqueue;		// BFS used queue to store the processed node
+		map<TreeNode*, int> mymap;		// TreeNode to its level depth map, 
+		map<int, vector<int> > mymap2;	// record the depth level and TreeNode list
 
 		int maxDepth = 0;				// record how deep our tree is
 
